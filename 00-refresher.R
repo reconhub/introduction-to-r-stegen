@@ -56,14 +56,28 @@ c(logi, int)
 c(logi, int, num)
 c(logi, int, num, char)
 
+# you can save data
+my_name <- c(given = "Zhian Namir", family = "Kamvar")
+
+# you can subset data
+
+my_name[1]
+my_name["given"]
+my_name[my_name == "Zhian Namir"]
+my_name[my_name == "Zhian Namir"] <- "Zhian N."
+my_name
+
+
 #' # Installing and using packages
 #' 
 #' Packages are an important part of the R ecosystem. There are more than 13,000
 #' packages available for download from CRAN (Comprehensive R Archive Network).
 #' You can install them on your system by using the function install.packages()
 
+# install.packages("tibble")
 # install.packages("here")
 # install.packages("readxl")
+# install.packages("ggplot2")
 
 #' You need only do this once because these packages will be installed to a
 #' special folder on your computer called your Library. You can see where on
@@ -73,8 +87,10 @@ c(logi, int, num, char)
 
 #' To use a package, you can load it into your R session by typing library("packagename")
 
-library("readxl") # load the package to read in excel data
-library("here")   # load the package that tells R where our project is
+library("tibble")  # load the package that helps us view data frames
+library("readxl")  # load the package to read in excel data
+library("ggplot2") # load the package to plot our data
+library("here")    # load the package that tells R where our project is
 
 #' # Importing data
 #' 
@@ -118,3 +134,42 @@ stegen_clean
 stegen <- read.csv(stegen_clean, stringsAsFactors = FALSE)
 stegen
 
+#' # Data structures
+#'
+#' The most common data structure you will deal with is a data frame. A data
+#' frame is basically R's version of a spreadsheet with the exception that each
+#' column MUST have the same type of data (logical, character, numeric, ...).
+#'
+#' We've read in the data frame stegen with `read.csv`. If we print it, it will
+#' spit out a lot of information. We can convert it to a better looking data
+#' frame with the function `as_tibble()`
+
+stegen <- as_tibble(stegen)
+stegen
+
+#' We can confirm that it is actually a data frame by checking:
+
+is.data.frame(stegen)
+
+#' Now we can see that the columns are highlighted by what type they are. If
+#' we wanted to inspect a column from the data frame, you would use the `$`
+#' operator:
+
+stegen$ill # vector of cases.
+
+#' You can also use the square brackets for multiple columns. Notice the comma
+#' before the column names? This tells us that we are subsetting columns. 
+#' Anything before the comma subsets rows
+
+stegen[, c("ill", "age")]
+stegen[1:5, c("ill", "age")]
+
+# We can use the row subsetter to give us only the cases that are over the age
+# of 18:
+stegen[stegen$age > 18, c("ill", "age")]
+
+#' We can also replace data. For example, we want the dates to be actual dates
+#' so we can use as.Date()
+
+stegen$date_onset <- as.Date(stegen$date_onset)
+stegen
