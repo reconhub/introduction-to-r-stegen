@@ -17,3 +17,5 @@ library("leaflet")   # interactive maps
 path_to_data <- here("data", "stegen_raw.xlsx")
 path_to_data
 stegen <- read_excel(path_to_data)
+
+
