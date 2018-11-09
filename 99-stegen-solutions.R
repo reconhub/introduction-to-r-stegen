@@ -5,6 +5,7 @@
 #' loading all of the packages at the beginning
 library("here")      # find data/script files
 library("readxl")    # read xlsx files
+library("readr")     # write text spreadsheets
 library("incidence") # make epicurves
 library("epitrix")   # clean labels and variables
 library("dplyr")     # general data handling
@@ -61,7 +62,7 @@ dir.create(clean_dir)
 
 # as a csv
 stegen_clean_file <- here("data", "cleaned", "stegen_clean.csv")
-write.csv(stegen, file = stegen_clean_file, row.names = FALSE)
+write_csv(stegen, path = stegen_clean_file)
 
 # as a binary file 
 stegen_clean_rds <- here("data", "cleaned", "stegen_clean.rds")
