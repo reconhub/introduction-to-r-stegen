@@ -84,13 +84,13 @@ ggplot(stegen) + geom_histogram(aes(x = age, fill = sex), binwidth = 1)
 #' 
 i_ill <- incidence(stegen$date_onset, group = stegen$ill)
 i_ill
-plot(i_ill, show_cases = TRUE, color = c("non case" = "#66cc99", "case" = "#990033"))
+plot(i_ill, show_cases = TRUE, color = c("non case" = "#66cc99", "case" = "#993333"))
 
 #' ### Age and gender by illness
 
 ggplot(stegen) +
   geom_histogram(aes(x = age, fill = ill), binwidth = 1) +
-  scale_fill_manual("Illness", values = c("non case" = "#66cc99", "case" = "#990033")) +
+  scale_fill_manual("Illness", values = c("non case" = "#66cc99", "case" = "#993333")) +
   facet_grid(sex ~ .) +
   labs(title = "Cases by age and gender") +
   theme_light()
@@ -131,10 +131,10 @@ all_food_df$predictor <- factor(all_food_df$predictor, unique(all_food_df$predic
 p <- ggplot(all_food_df, aes(x = estimate, y = predictor, color = p.value)) +
   geom_point() +
   geom_errorbarh(aes(xmin = lower, xmax = upper)) +
-  geom_vline(xintercept = 1, linetype = 2) +
-  scale_x_log10() +
-  scale_color_viridis_c() +
-  labs(x = "Risk Ratio (log scale)",
+  geom_vline(xintercept = 1, linetype = 2) + 
+  scale_x_log10() + 
+  scale_color_viridis_c(trans = "log10") + 
+  labs(x = "Risk Ratio (log scale)", 
        y = "Predictor",
        title = "Risk Ratio for gastroenteritis in Stegen, Germany")
 p
@@ -145,6 +145,7 @@ p
 
 ggplot(stegen) +
   geom_point(aes(x = longitude, y = latitude, color = ill)) +
+  scale_color_manual("Illness", values = c("non case" = "#66cc99", "case" = "#993333")) +
   coord_map()
 
 #' ## With shapefiles
@@ -152,7 +153,8 @@ ggplot(stegen) +
 stegen_shp <- read_sf(here("data", "stegen-map", "stegen_households.shp"))
 ggplot(stegen) +
   geom_sf(data = stegen_shp) +
-  geom_point(aes(x = longitude, y = latitude, color = ill))
+  geom_point(aes(x = longitude, y = latitude, color = ill)) +
+  scale_color_manual("Illness", values = c("non case" = "#66cc99", "case" = "#993333")) 
 
 #' ## Interactive map
 #'
@@ -167,6 +169,11 @@ lmap <- setView(lmap, lng = 7.963, lat = 47.982, zoom = 15)
 # Add the shapefile
 lmap <- addPolygons(lmap, data = st_transform(stegen_shp, '+proj=longlat +ellps=GRS80'))
 # Add the cases
-lmap <- addMarkers(lmap, label = ~ill, data = stegen_sub)
+lmap <- addCircleMarkers(lmap, 
+                         label = ~ill, 
+                         color = ~ifelse(ill == "case", "#993333", "#66cc99"), 
+                         stroke = FALSE,
+                         fillOpacity = 0.8,
+                         data = stegen_sub)
 # show the map
 lmap
